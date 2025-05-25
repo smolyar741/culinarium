@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Рецепты</title>
+    <link rel="stylesheet" href="./pages/index.css">
+</head>
+<body class="body">
+  <header class="header">
+      <nav class="nav">
+          <div class="nav__container container">
+              <ul class="nav__items list">
+                  <li class="nav__item nav__item_active"><a href="indexAuth.html" class="nav__link link">Рецепты</a></li>
+                  <li class="nav__item"><a href="myFollow.html" class="nav__link link">Мои подписки</a></li>
+                  <li class="nav__item"><a href="formRecipe.html" class="nav__link link">Создать рецепт</a></li>
+                  <li class="nav__item"><a href="favorite.html" class="nav__link link">Избранное</a></li>
+                  <li class="nav__item"><a href="shopList.html" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter">4</span></li>
+
+              </ul>
+              <ul class="nav__items list">
+                  <li class="nav__item"><a href="resetPassword.html" class="nav__link link">Изменить пароль</a></li>
+                  <li class="nav__item"><a href="indexNotAuth.html" class="nav__link link">Выход</a></li>
+              </ul>
+          </div>
+      </nav>
+  </header>
+    <main class="main container">
+        <div class="main__header">
+            <h1 class="main__title">Вероника Чернова</h1>
+            <ul class="tags">
+                <li class="tags__item">
+                    <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="#"></a>
+                    <span class="tags__label">Завтрак</span>
+                </li>
+                <li class="tags__item">
+                    <a id="lunch" class="tags__checkbox tags__checkbox_style_green tags__checkbox_active" href="#"></a>
+                    <span for="lunch" class="tags__label">Обед</span>
+                </li>
+                <li class="tags__item">
+                    <a id="dinner" class="tags__checkbox tags__checkbox_style_purple tags__checkbox_active" href="#"></a>
+                    <label for="dinner" class="tags__label">Ужин</label>
+                </li>
+            </ul>
+
+        </div>
+<!--        <p style="padding: 0 0 2em 0;"><a class="button button_style_light-blue" href="#">Подписаться на автора</a></p>-->
+        <div class="author-subscribe" data-author="323">
+            <p style="padding: 0 0 2em 0;"><button class="button button_style_light-blue button_size_subscribe" name="subscribe" data-out>Подписаться на автора</button></p>
+        </div>
+        <div class="card-list" >
+        <div class="card" data-id="120">
+            <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
+            <div class="card__body">
+                <a class="card__title link" href="#" target="_blank">Французские тосты</a>
+                <ul class="card__items">
+                    <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
+                    <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
+                    <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
+                </ul>
+                <div class="card__items card__items_column">
+                    <p class="card__text"><span class="icon-time"></span> 20 мин.</p>
+                    <p class="card__text"><span class="icon-user"></span> <a href="#" style="color: black">Вероника Чернова</a></p>
+                </div>
+            </div>
+            <div class="card__footer">
+                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+            </div>
+        </div>
+        <div class="card" data-id="121">
+            <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
+            <div class="card__body">
+                <a class="card__title link" href="#" target="_blank">Французские тосты</a>
+                <ul class="card__items">
+                    <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
+                    <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
+                    <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
+                </ul>
+                <div class="card__items card__items_column">
+                    <p class="card__text"><span class="icon-time"></span> 20 мин.</p>
+                    <p class="card__text"><span class="icon-user"></span> <a href="#" style="color: black">Вероника Чернова</a></p>
+                </div>
+            </div>
+            <div class="card__footer">
+                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+            </div>
+        </div>
+        <div class="card" data-id="122">
+            <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
+            <div class="card__body">
+                <a class="card__title link" href="#" target="_blank">Французские тосты</a>
+                <ul class="card__items">
+                    <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
+                    <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
+                    <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
+                </ul>
+                <div class="card__items card__items_column">
+                    <p class="card__text"><span class="icon-time"></span> 20 мин.</p>
+                    <p class="card__text"><span class="icon-user"></span> <a href="#" style="color: black">Вероника Чернова</a></p>
+                </div>
+            </div>
+            <div class="card__footer">
+                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+            </div>
+        </div>
+        <div class="card" data-id="123">
+            <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
+            <div class="card__body">
+                <a class="card__title link" href="#" target="_blank">Французские тосты</a>
+                <ul class="card__items">
+                    <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
+                    <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
+                    <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
+                </ul>
+                <div class="card__items card__items_column">
+                    <p class="card__text"><span class="icon-time"></span> 20 мин.</p>
+                    <p class="card__text"><span class="icon-user"></span> <a href="#" style="color: black">Вероника Чернова</a></p>
+                </div>
+            </div>
+            <div class="card__footer">
+                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+            </div>
+        </div>
+        <div class="card" data-id="124">
+            <a href="#" class="link" target="_blank"><img src="./images/testCardImg.png" alt="Какой-то текст" class="card__image"></a>
+            <div class="card__body">
+                <a class="card__title link" href="#" target="_blank">Французские тосты</a>
+                <ul class="card__items">
+                    <li class="card__item"><span class="badge badge_style_green">Обед</span></li>
+                    <li class="card__item"><span class="badge badge_style_orange">Завтрак</span></li>
+                    <li class="card__item"><span class="badge badge_style_purple">Ужин</span></li>
+                </ul>
+                <div class="card__items card__items_column">
+                    <p class="card__text"><span class="icon-time"></span> 20 мин.</p>
+                    <p class="card__text"><span class="icon-user"></span> <a href="#" style="color: black">Вероника Чернова</a></p>
+                </div>
+            </div>
+            <div class="card__footer">
+                <button class="button button_style_light-blue" name="purchases" data-out><span class="icon-plus button__icon"></span>Добавить в покупки</button>
+                <button class="button button_style_none" name="favorites" data-out><span class="icon-favorite"></span></button>
+            </div>
+        </div>
+    </div>
+        <nav class="pagination" aria-label="Search results pages">
+            <ul class="pagination__container">
+                <li class="pagination__item"><a class="pagination__link link" href="#"><span class="icon-left"></span></a></li>
+                <li class="pagination__item pagination__item_active"><a class="pagination__link link" href="#">1</a></li>
+                <li class="pagination__item"><a class="pagination__link link" href="#">2</a></li>
+                <li class="pagination__item"><a class="pagination__link link" href="#">3</a></li>
+                <li class="pagination__item"><a class="pagination__link link" href="#">4</a></li>
+                <li class="pagination__item"><a class="pagination__link link" href="#">5</a></li>
+                <li class="pagination__item"><a class="pagination__link link" href="#"><span class="icon-right"></span></a></li>
+            </ul>
+        </nav>
+    </main>
+    <footer class="footer">
+        <div class="footer__container container">
+            <a href="#" class="footer__brand link">Кулинариум</a>
+            <ul class="footer__items">
+                <li class="footer__item"><a href="#" class="footer__link link">Об авторе </a></li>
+                <li class="footer__item"><a href="#" class="footer__link link">Технологии</a></li>
+            </ul>
+        </div>
+    </footer>
+  <script src="./js/components/MainCards.js"></script>
+
+  <script src="./js/components/Purchases.js"></script>
+  <script src="./js/components/Favorites.js"></script>
+  <script src="./js/components/Subscribe.js"></script>
+
+  <script src="./js/config/config.js"></script>
+  <script src="./js/components/AuthorRecipe.js"></script>
+  <script src="./js/components/Header.js"></script>
+
+  <script src="./js/api/Api.js"></script>
+  <script src="authorRecipe.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Элементы DOM
+        const cardList = document.querySelector('.card-list');
+        const tags = document.querySelectorAll('.tags__checkbox');
+        const counter = document.getElementById('counter');
+        const pagination = document.querySelector('.pagination__container');
+        const subscribeBtn = document.querySelector('button[name="subscribe"]');
+        const authorId = document.querySelector('.author-subscribe').getAttribute('data-author');
+        
+        // Текущие активные теги
+        let activeTags = ['breakfast', 'lunch', 'dinner'];
+        // Текущая страница
+        let currentPage = 1;
+        
+        // Класс для работы с карточками рецептов автора
+        class AuthorRecipes {
+            constructor(container) {
+                this.container = container;
+                this.cards = Array.from(container.querySelectorAll('.card'));
+                this.favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+                this.purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+                this.subscriptions = JSON.parse(localStorage.getItem('subscriptions')) || [];
+                this.setupEventListeners();
+                this.setupPagination();
+                this.updateFavorites();
+                this.updatePurchases();
+                this.updateSubscribeButton();
+            }
+            
+            // Настройка обработчиков событий
+            setupEventListeners() {
+                this.cards.forEach(card => {
+                    const cardId = card.getAttribute('data-id');
+                    
+                    // Обработчик для кнопки избранного
+                    const favoriteBtn = card.querySelector('button[name="favorites"]');
+                    favoriteBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.toggleFavorite(cardId);
+                    });
+                    
+                    // Обработчик для кнопки покупок
+                    const purchaseBtn = card.querySelector('button[name="purchases"]');
+                    purchaseBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.togglePurchase(cardId);
+                    });
+                    
+                    // Обработчик для клика по карточке
+                    const cardLink = card.querySelector('.card__title');
+                    cardLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        window.location.href = `singlePage.html?id=${cardId}`;
+                    });
+                });
+                
+                // Обработчик для кнопки подписки
+                subscribeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.toggleSubscription(authorId);
+                });
+            }
+            
+            // Настройка пагинации
+            setupPagination() {
+                const pageLinks = pagination.querySelectorAll('.pagination__link');
+                
+                pageLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        
+                        // Обработка стрелок
+                        if (link.querySelector('.icon-left')) {
+                            this.goToPage(currentPage - 1);
+                        } else if (link.querySelector('.icon-right')) {
+                            this.goToPage(currentPage + 1);
+                        } else {
+                            const pageNum = parseInt(link.textContent);
+                            if (!isNaN(pageNum)) {
+                                this.goToPage(pageNum);
+                            }
+                        }
+                    });
+                });
+            }
+            
+            // Переход на указанную страницу
+            goToPage(page) {
+                if (page < 1 || page > 5) return;
+                
+                currentPage = page;
+                
+                // Обновление активной страницы в пагинации
+                const pageItems = pagination.querySelectorAll('.pagination__item');
+                pageItems.forEach(item => {
+                    item.classList.remove('pagination__item_active');
+                    if (item.textContent == currentPage) {
+                        item.classList.add('pagination__item_active');
+                    }
+                });
+                
+                // Прокрутка к верху страницы
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                console.log(`Переход на страницу ${currentPage}`);
+                // Здесь можно добавить загрузку данных для новой страницы
+            }
+            
+            // Фильтрация по тегам
+            filterByTags(tags) {
+                this.cards.forEach(card => {
+                    const cardTags = Array.from(card.querySelectorAll('.badge')).map(badge => {
+                        if (badge.classList.contains('badge_style_orange')) return 'breakfast';
+                        if (badge.classList.contains('badge_style_green')) return 'lunch';
+                        if (badge.classList.contains('badge_style_purple')) return 'dinner';
+                        return '';
+                    });
+                    
+                    const hasActiveTag = tags.some(tag => cardTags.includes(tag));
+                    card.style.display = hasActiveTag ? 'block' : 'none';
+                });
+            }
+            
+            // Добавление/удаление из избранного
+            toggleFavorite(cardId) {
+                const index = this.favorites.indexOf(cardId);
+                if (index === -1) {
+                    this.favorites.push(cardId);
+                } else {
+                    this.favorites.splice(index, 1);
+                }
+                localStorage.setItem('favorites', JSON.stringify(this.favorites));
+                this.updateFavorites();
+            }
+            
+            // Добавление/удаление из покупок
+            togglePurchase(cardId) {
+                const index = this.purchases.indexOf(cardId);
+                if (index === -1) {
+                    this.purchases.push(cardId);
+                } else {
+                    this.purchases.splice(index, 1);
+                }
+                localStorage.setItem('purchases', JSON.stringify(this.purchases));
+                this.updatePurchases();
+                this.updateCounter();
+            }
+            
+            // Добавление/удаление подписки
+            toggleSubscription(authorId) {
+                const index = this.subscriptions.indexOf(authorId);
+                if (index === -1) {
+                    this.subscriptions.push(authorId);
+                } else {
+                    this.subscriptions.splice(index, 1);
+                }
+                localStorage.setItem('subscriptions', JSON.stringify(this.subscriptions));
+                this.updateSubscribeButton();
+            }
+            
+            // Обновление состояния кнопок избранного
+            updateFavorites() {
+                this.cards.forEach(card => {
+                    const cardId = card.getAttribute('data-id');
+                    const favoriteBtn = card.querySelector('button[name="favorites"]');
+                    const icon = favoriteBtn.querySelector('.icon-favorite');
+                    
+                    if (this.favorites.includes(cardId)) {
+                        icon.classList.add('icon-favorite_active');
+                        favoriteBtn.setAttribute('data-out', 'false');
+                    } else {
+                        icon.classList.remove('icon-favorite_active');
+                        favoriteBtn.setAttribute('data-out', 'true');
+                    }
+                });
+            }
+            
+            // Обновление состояния кнопок покупок
+            updatePurchases() {
+                this.cards.forEach(card => {
+                    const cardId = card.getAttribute('data-id');
+                    const purchaseBtn = card.querySelector('button[name="purchases"]');
+                    
+                    if (this.purchases.includes(cardId)) {
+                        purchaseBtn.textContent = 'Рецепт добавлен';
+                        purchaseBtn.classList.add('button_style_light-blue-outline');
+                        purchaseBtn.setAttribute('data-out', 'false');
+                    } else {
+                        purchaseBtn.innerHTML = '<span class="icon-plus button__icon"></span>Добавить в покупки';
+                        purchaseBtn.classList.remove('button_style_light-blue-outline');
+                        purchaseBtn.setAttribute('data-out', 'true');
+                    }
+                });
+            }
+            
+            // Обновление кнопки подписки
+            updateSubscribeButton() {
+                if (this.subscriptions.includes(authorId)) {
+                    subscribeBtn.textContent = 'Отписаться';
+                    subscribeBtn.classList.remove('button_style_light-blue');
+                    subscribeBtn.classList.add('button_style_blue');
+                    subscribeBtn.setAttribute('data-out', 'false');
+                } else {
+                    subscribeBtn.textContent = 'Подписаться на автора';
+                    subscribeBtn.classList.remove('button_style_blue');
+                    subscribeBtn.classList.add('button_style_light-blue');
+                    subscribeBtn.setAttribute('data-out', 'true');
+                }
+            }
+            
+            // Обновление счетчика покупок
+            updateCounter() {
+                counter.textContent = this.purchases.length;
+            }
+        }
+        
+        // Инициализация карточек
+        const authorRecipes = new AuthorRecipes(cardList);
+        
+        // Обработчики для тегов
+        tags.forEach(tag => {
+            tag.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('tags__checkbox_active');
+                
+                // Обновление активных тегов
+                activeTags = Array.from(tags)
+                    .filter(t => t.classList.contains('tags__checkbox_active'))
+                    .map(t => t.id);
+                
+                // Если нет активных тегов, показываем все
+                if (activeTags.length === 0) {
+                    activeTags = ['breakfast', 'lunch', 'dinner'];
+                    tags.forEach(t => t.classList.add('tags__checkbox_active'));
+                }
+                
+                authorRecipes.filterByTags(activeTags);
+            });
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Элементы DOM
+        const cardList = document.querySelector('.card-list');
+        const tags = document.querySelectorAll('.tags__checkbox');
+        const counter = document.getElementById('counter');
+        const pagination = document.querySelector('.pagination__container');
+        const subscribeBtn = document.querySelector('button[name="subscribe"]');
+        const authorId = document.querySelector('.author-subscribe').getAttribute('data-author');
+        
+        // Текущие активные теги
+        let activeTags = ['breakfast', 'lunch', 'dinner'];
+        // Текущая страница
+        let currentPage = 1;
+        
+        // Класс для работы с карточками рецептов автора
+        class AuthorRecipes {
+            constructor(container) {
+                this.container = container;
+                this.cards = Array.from(container.querySelectorAll('.card'));
+                this.favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+                this.purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+                this.subscriptions = JSON.parse(localStorage.getItem('subscriptions')) || [];
+                this.setupEventListeners();
+                this.setupPagination();
+                this.updateFavorites();
+                this.updatePurchases();
+                this.updateSubscribeButton();
+            }
+            
+            // Настройка обработчиков событий
+            setupEventListeners() {
+                this.cards.forEach(card => {
+                    const cardId = card.getAttribute('data-id');
+                    
+                    // Обработчик для кнопки избранного
+                    const favoriteBtn = card.querySelector('button[name="favorites"]');
+                    favoriteBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.toggleFavorite(cardId);
+                    });
+                    
+                    // Обработчик для кнопки покупок
+                    const purchaseBtn = card.querySelector('button[name="purchases"]');
+                    purchaseBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.togglePurchase(cardId);
+                    });
+                    
+                    // Обработчик для клика по карточке (изображение и заголовок)
+                    const cardImage = card.querySelector('.card__image');
+                    const cardTitle = card.querySelector('.card__title');
+                    
+                    [cardImage, cardTitle].forEach(element => {
+                        element.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            window.location.href = `singlePage.html?id=${cardId}`;
+                        });
+                    });
+                });
+                
+                // Обработчик для кнопки подписки
+                subscribeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.toggleSubscription(authorId);
+                });
+            }
+            
+            // ... (остальные методы класса остаются без изменений) ...
+        }
+        
+        // Инициализация карточек
+        const authorRecipes = new AuthorRecipes(cardList);
+        
+        // Обработчики для тегов
+        tags.forEach(tag => {
+            tag.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('tags__checkbox_active');
+                
+                // Обновление активных тегов
+                activeTags = Array.from(tags)
+                    .filter(t => t.classList.contains('tags__checkbox_active'))
+                    .map(t => t.id);
+                
+                // Если нет активных тегов, показываем все
+                if (activeTags.length === 0) {
+                    activeTags = ['breakfast', 'lunch', 'dinner'];
+                    tags.forEach(t => t.classList.add('tags__checkbox_active'));
+                }
+                
+                authorRecipes.filterByTags(activeTags);
+            });
+        });
+    });
+</script>
+</body>
+</html>

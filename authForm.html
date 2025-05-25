@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Войти на сайт</title>
+    <link rel="stylesheet" href="./pages/form.css">
+</head>
+<body class="body">
+<header class="header">
+    <nav class="nav">
+        <div class="nav__container container">
+            <ul class="nav__items list">
+                <li class="nav__item nav__item_disabled"><a href="indexNotAuth.html" class="nav__link link">Рецепты</a></li>
+                <li class="nav__item nav__item_disabled"><a href="#" class="nav__link link">Список покупок</a></li>
+            </ul>
+            <ul class="nav__items list">
+                <li class="nav__item"><a href="indexAuth.html" class="nav__link link">Войти</a></li>
+                <li class="nav__item"><a href="reg.html" class="button button_style_blue">Создать аккаунт</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<main class="main container">
+    <div class="main__header">
+        <h1 class="main__title">Войти на сайт</h1>
+    </div>
+    <div class="form-container">
+        <form class="form" id="loginForm">
+            <div class="form__group">
+                <label for="id_username" class="form__label">Имя пользователя</label>
+                <div class="form__field-group">
+                    <input type="text" name="username" id="id_username" class="form__input" required>
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="id_password" class="form__label">Пароль</label>
+                <div class="form__field-group">
+                    <input type="password" name="password" id="id_password" class="form__input" required>
+                    <span class="form__error" id="errorMessage"></span>
+                </div>
+            </div>
+            <div class="form__footer">
+                <button type="submit" class="button button_style_blue">Войти</button>
+                <a href="resetPassword.html" class="form__forgot-link">Забыли пароль?</a>
+            </div>
+        </form>
+    </div>
+</main>
+<footer class="footer">
+    <div class="footer__container container">
+        <a href="indexNotAuth.html" class="footer__brand link">Кулинариум</a>
+        <ul class="footer__items">
+            <li class="footer__item"><a href="#" class="footer__link link">Об авторе </a></li>
+            <li class="footer__item"><a href="#" class="footer__link link">Технологии</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        
+        // Проверяем, есть ли сохраненные пользователи в localStorage
+        if (!localStorage.getItem('users')) {
+            // Создаем тестового пользователя, если нет зарегистрированных
+            const testUser = {
+                username: 'testuser',
+                password: 'Test1234' // В реальном приложении пароль должен быть хеширован
+            };
+            localStorage.setItem('users', JSON.stringify([testUser]));
+        }
+        
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('id_username').value;
+            const password = document.getElementById('id_password').value;
+            
+            // Получаем список пользователей из localStorage
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            
+            // Ищем пользователя с введенными данными
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                // Успешный вход
+                errorMessage.textContent = '';
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                window.location.href = 'indexAuth.html';
+            } else {
+                // Неверные данные
+                errorMessage.textContent = 'Имя пользователя и пароль не совпадают. Введите правильные данные.';
+            }
+        });
+    });
+</script>
+</body>
+</html>

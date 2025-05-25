@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кулинариум - Просмотр рецепта</title>
+    <link rel="stylesheet" href="./pages/single.css">
+</head>
+<body class="body">
+<header class="header">
+    <nav class="nav">
+        <div class="nav__container container">
+            <ul class="nav__items list">
+                <li class="nav__item"><a href="indexAuth.html" class="nav__link link">Рецепты</a></li>
+                <li class="nav__item"><a href="myFollow.html" class="nav__link link">Мои подписки</a></li>
+                <li class="nav__item"><a href="formRecipe.html" class="nav__link link">Создать рецепт</a></li>
+                <li class="nav__item"><a href="favorite.html" class="nav__link link">Избранное</a></li>
+                <li class="nav__item">
+                    <a href="shopList.html" class="nav__link link">Список покупок</a>
+                    <span class="badge badge_style_blue nav__badge" id="counter">0</span>
+                </li>
+            </ul>
+            <ul class="nav__items list">
+                <li class="nav__item"><a href="resetPassword.html" class="nav__link link">Изменить пароль</a></li>
+                <li class="nav__item"><a href="indexNotAuth.html" class="nav__link link">Выход</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main class="main container">
+    <div class="single-card" id="recipeContainer">
+        <!-- Контент будет загружен динамически -->
+        <div class="loading">Загрузка рецепта...</div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer__container container">
+        <a href="#" class="footer__brand link">Кулинариум</a>
+        <ul class="footer__items">
+            <li class="footer__item"><a href="#" class="footer__link link">Об авторе</a></li>
+            <li class="footer__item"><a href="#" class="footer__link link">Технологии</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Получаем ID рецепта из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const recipeId = urlParams.get('id');
+    
+    // DOM элементы
+    const recipeContainer = document.getElementById('recipeContainer');
+    const counter = document.getElementById('counter');
+    
+    // Загружаем данные рецепта
+    loadRecipeData(recipeId);
+    
+    // Функция загрузки данных рецепта
+    function loadRecipeData(recipeId) {
+        try {
+            const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+            const recipe = recipes.find(r => r.id === recipeId);
+            
+            if (!recipe) {
+                throw new Error('Рецепт не найден');
+            }
+            
+            renderRecipe(recipe);
+            setupEventListeners(recipe);
+            updateCounter();
+        } catch (error) {
+            console.error('Ошибка загрузки рецепта:', error);
+            recipeContainer.innerHTML = `
+                <div class="error">
+                    <p>Рецепт не найден</p>
+                    <a href="indexAuth.html" class="button button_style_blue">Вернуться к рецептам</a>
+                </div>
+            `;
+        }
+    }
+    
+    // Рендеринг рецепта
+    function renderRecipe(recipe) {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        const subscriptions = JSON.parse(localStorage.getItem('subscriptions')) || [];
+        
+        const isFavorite = favorites.includes(recipe.id);
+        const inPurchases = purchases.includes(recipe.id);
+        const isSubscribed = recipe.author && subscriptions.includes(recipe.author.id);
+        
+        // Формируем HTML для тегов
+        const tagsHTML = recipe.tags.map(tag => {
+            const tagClass = {
+                breakfast: 'badge_style_orange',
+                lunch: 'badge_style_green',
+                dinner: 'badge_style_purple'
+            }[tag] || '';
+            
+            const tagName = {
+                breakfast: 'Завтрак',
+                lunch: 'Обед',
+                dinner: 'Ужин'
+            }[tag] || tag;
+            
+            return `<li class="single-card__item"><span class="badge ${tagClass}">${tagName}</span></li>`;
+        }).join('');
+        
+        // Формируем HTML для ингредиентов
+        const ingredientsHTML = recipe.ingredients.map(ing => 
+            `<p class="single-card__section-item">${ing.name} - ${ing.amount} ${ing.unit}</p>`
+        ).join('');
+        
+        // Формируем HTML для описания (разбиваем по абзацам)
+        const descriptionHTML = recipe.description.split('\n')
+            .map(p => `<p class="single-card__section-text">${p}</p>`)
+            .join('');
+        
+        // Определяем, можно ли редактировать рецепт (только автор)
+        const currentUser = getCurrentUser();
+        const canEdit = currentUser && recipe.author && currentUser.id === recipe.author.id;
+        
+        recipeContainer.innerHTML = `
+            <img src="${recipe.image || './images/default-recipe.jpg'}" 
+                 alt="${recipe.name}" 
+                 class="single-card__image"
+                 onerror="this.src='./images/default-recipe.jpg'">
+            <div class="single-card__info">
+                <div class="single-card__header-info">
+                    <h1 class="single-card__title">${recipe.name}</h1>
+                    <div class="single-card__favorite">
+                        <button class="button button_style_none" name="favorites" data-out="${!isFavorite}">
+                            <span class="icon-favorite icon-favorite_big ${isFavorite ? 'icon-favorite_active' : ''}"></span>
+                        </button>
+                        <div class="single-card__favorite-tooltip tooltip">
+                            ${isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
+                        </div>
+                    </div>
+                </div>
+                <ul class="single-card__items">
+                    ${tagsHTML}
+                </ul>
+                <div class="single-card__items single-card__items_column">
+                    <p class="single-card__text"><span class="icon-time"></span> ${recipe.cooking_time} мин.</p>
+                    <ul class="single-card__items">
+                        <li class="single-card__item">
+                            <p class="single-card__text"><span class="icon-user"></span> ${recipe.author?.username || 'Автор'}</p>
+                        </li>
+                        ${canEdit ? `
+                        <li class="single-card__item">
+                            <a href="formChangeRecipe.html?id=${recipe.id}" class="single-card__text" style="margin-left: 2.5em" id="editRecipeLink">Редактировать рецепт</a>
+                        </li>
+                        ` : ''}
+                    </ul>
+                </div>
+                <ul class="single-card__items">
+                    <li class="single-card__item">
+                        <button class="button button_style_blue ${inPurchases ? 'button_style_light-blue-outline' : ''}" 
+                                name="purchases" 
+                                data-out="${!inPurchases}">
+                            ${inPurchases ? 'Рецепт добавлен' : '<span class="icon-plus"></span> Добавить в покупки'}
+                        </button>
+                    </li>
+                    ${recipe.author ? `
+                    <li class="single-card__item">
+                        <button class="button ${isSubscribed ? 'button_style_blue' : 'button_style_light-blue'} button_size_subscribe" 
+                                name="subscribe" 
+                                data-out="${!isSubscribed}">
+                            ${isSubscribed ? 'Отписаться' : 'Подписаться на автора'}
+                        </button>
+                    </li>
+                    ` : ''}
+                </ul>
+                <div class="single-card__section">
+                    <h3 class="single-card__section-title">Ингредиенты:</h3>
+                    <div class="single-card__items single-card__items_column">
+                        ${ingredientsHTML}
+                    </div>
+                </div>
+                <div class="single-card__section">
+                    <h3 class="single-card__section-title">Описание:</h3>
+                    ${descriptionHTML}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Настройка обработчиков событий
+    function setupEventListeners(recipe) {
+        // Обработчик для кнопки избранного
+        const favoriteBtn = document.querySelector('button[name="favorites"]');
+        if (favoriteBtn) {
+            favoriteBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                toggleFavorite(recipe.id);
+            });
+        }
+        
+        // Обработчик для кнопки покупок
+        const purchaseBtn = document.querySelector('button[name="purchases"]');
+        if (purchaseBtn) {
+            purchaseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                togglePurchase(recipe.id);
+            });
+        }
+        
+        // Обработчик для кнопки подписки (если есть автор)
+        if (recipe.author) {
+            const subscribeBtn = document.querySelector('button[name="subscribe"]');
+            if (subscribeBtn) {
+                subscribeBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleSubscription(recipe.author.id);
+                });
+            }
+        }
+        
+        // Обработчик для ссылки редактирования
+        const editLink = document.getElementById('editRecipeLink');
+        if (editLink) {
+            editLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Сохраняем данные рецепта для редактирования
+                localStorage.setItem('currentRecipe', JSON.stringify(recipe));
+                // Переходим на страницу редактирования
+                window.location.href = `formChangeRecipe.html?id=${recipe.id}`;
+            });
+        }
+    }
+    
+    // Работа с избранным
+    function toggleFavorite(recipeId) {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        const favoriteBtn = document.querySelector('button[name="favorites"]');
+        const favoriteIcon = favoriteBtn?.querySelector('.icon-favorite');
+        const tooltip = document.querySelector('.single-card__favorite-tooltip');
+        
+        if (favorites.includes(recipeId)) {
+            // Удаляем из избранного
+            const index = favorites.indexOf(recipeId);
+            favorites.splice(index, 1);
+            if (favoriteIcon) favoriteIcon.classList.remove('icon-favorite_active');
+            if (favoriteBtn) favoriteBtn.setAttribute('data-out', 'true');
+            if (tooltip) tooltip.textContent = 'Добавить в избранное';
+        } else {
+            // Добавляем в избранное
+            favorites.push(recipeId);
+            if (favoriteIcon) favoriteIcon.classList.add('icon-favorite_active');
+            if (favoriteBtn) favoriteBtn.setAttribute('data-out', 'false');
+            if (tooltip) tooltip.textContent = 'Удалить из избранного';
+        }
+        
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+    
+    // Работа с покупками
+    function togglePurchase(recipeId) {
+        const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        const purchaseBtn = document.querySelector('button[name="purchases"]');
+        
+        if (purchases.includes(recipeId)) {
+            // Удаляем из покупок
+            const index = purchases.indexOf(recipeId);
+            purchases.splice(index, 1);
+            if (purchaseBtn) {
+                purchaseBtn.innerHTML = '<span class="icon-plus"></span> Добавить в покупки';
+                purchaseBtn.classList.remove('button_style_light-blue-outline');
+                purchaseBtn.setAttribute('data-out', 'true');
+            }
+        } else {
+            // Добавляем в покупки
+            purchases.push(recipeId);
+            if (purchaseBtn) {
+                purchaseBtn.textContent = 'Рецепт добавлен';
+                purchaseBtn.classList.add('button_style_light-blue-outline');
+                purchaseBtn.setAttribute('data-out', 'false');
+            }
+        }
+        
+        localStorage.setItem('purchases', JSON.stringify(purchases));
+        updateCounter();
+    }
+    
+    // Работа с подписками
+    function toggleSubscription(authorId) {
+        const subscriptions = JSON.parse(localStorage.getItem('subscriptions')) || [];
+        const subscribeBtn = document.querySelector('button[name="subscribe"]');
+        
+        if (subscriptions.includes(authorId)) {
+            // Отписываемся
+            const index = subscriptions.indexOf(authorId);
+            subscriptions.splice(index, 1);
+            if (subscribeBtn) {
+                subscribeBtn.textContent = 'Подписаться на автора';
+                subscribeBtn.classList.remove('button_style_blue');
+                subscribeBtn.classList.add('button_style_light-blue');
+                subscribeBtn.setAttribute('data-out', 'true');
+            }
+        } else {
+            // Подписываемся
+            subscriptions.push(authorId);
+            if (subscribeBtn) {
+                subscribeBtn.textContent = 'Отписаться';
+                subscribeBtn.classList.remove('button_style_light-blue');
+                subscribeBtn.classList.add('button_style_blue');
+                subscribeBtn.setAttribute('data-out', 'false');
+            }
+        }
+        
+        localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
+    }
+    
+    // Обновление счетчика покупок
+    function updateCounter() {
+        const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        counter.textContent = purchases.length;
+    }
+    
+    // Получение текущего пользователя (заглушка)
+    function getCurrentUser() {
+        // В реальном приложении нужно получать из системы аутентификации
+        return {
+            id: 'user1',
+            username: 'Текущий пользователь'
+        };
+    }
+});
+</script>
+</body>
+</html>

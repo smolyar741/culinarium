@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кулинариум - Список покупок</title>
+    <link rel="stylesheet" href="./pages/shopList.css">
+</head>
+<body class="body">
+<header class="header">
+    <nav class="nav">
+        <div class="nav__container container">
+            <ul class="nav__items list">
+                <li class="nav__item"><a href="indexAuth.html" class="nav__link link">Рецепты</a></li>
+                <li class="nav__item"><a href="myFollow.html" class="nav__link link">Мои подписки</a></li>
+                <li class="nav__item"><a href="formRecipe.html" class="nav__link link">Создать рецепт</a></li>
+                <li class="nav__item"><a href="favorite.html" class="nav__link link">Избранное</a></li>
+                <li class="nav__item nav__item_active">
+                    <a href="shopList.html" class="nav__link link">Список покупок</a>
+                    <span class="badge badge_style_blue nav__badge" id="counter">0</span>
+                </li>
+            </ul>
+            <ul class="nav__items list">
+                <li class="nav__item"><a href="resetPassword.html" class="nav__link link">Изменить пароль</a></li>
+                <li class="nav__item"><a href="#" class="nav__link link" id="logoutButton">Выход</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main class="main container">
+    <div class="main__header">
+        <h1 class="main__title">Список покупок</h1>
+    </div>
+    <div class="card-list card-list_column">
+        <ul class="shopping-list" id="shoppingList">
+            <!-- Список будет заполнен динамически -->
+            <div class="empty-message" id="emptyMessage" style="display: none;">
+                <p>Ваш список покупок пуст</p>
+                <a href="indexAuth.html" class="button button_style_blue">Найти рецепты</a>
+            </div>
+        </ul>
+        <button id="downloadButton" class="button button_style_blue" style="display: none;">Скачать список</button>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer__container container">
+        <a href="#" class="footer__brand link">Кулинариум</a>
+        <ul class="footer__items">
+            <li class="footer__item"><a href="#" class="footer__link link">Об авторе</a></li>
+            <li class="footer__item"><a href="#" class="footer__link link">Технологии</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM элементы
+    const shoppingList = document.getElementById('shoppingList');
+    const emptyMessage = document.getElementById('emptyMessage');
+    const downloadButton = document.getElementById('downloadButton');
+    const counter = document.getElementById('counter');
+    const logoutButton = document.getElementById('logoutButton');
+
+    // Загружаем список покупок
+    loadShoppingList();
+
+    // Функция загрузки списка покупок
+    function loadShoppingList() {
+        const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+        
+        // Очищаем список перед загрузкой
+        shoppingList.innerHTML = '';
+        
+        if (purchases.length === 0) {
+            showEmptyMessage();
+            return;
+        }
+        
+        // Фильтруем рецепты, которые есть в списке покупок
+        const purchasedRecipes = recipes.filter(recipe => purchases.includes(recipe.id));
+        
+        if (purchasedRecipes.length === 0) {
+            showEmptyMessage();
+            return;
+        }
+        
+        // Рендерим каждый рецепт
+        purchasedRecipes.forEach(recipe => {
+            const listItem = createRecipeItem(recipe);
+            shoppingList.appendChild(listItem);
+        });
+        
+        // Показываем кнопку скачивания
+        downloadButton.style.display = 'block';
+        // Обновляем счетчик
+        updateCounter(purchases.length);
+    }
+
+    // Создание элемента списка для рецепта
+    function createRecipeItem(recipe) {
+        const listItem = document.createElement('li');
+        listItem.className = 'shopping-list__item';
+        listItem.setAttribute('data-id', recipe.id);
+        
+        listItem.innerHTML = `
+            <div class="recipe recipe_reverse">
+                <img src="${recipe.image || './images/default-recipe.jpg'}" 
+                     alt="${recipe.name}" 
+                     class="recipe__image recipe__image_big"
+                     onerror="this.src='./images/default-recipe.jpg'">
+                <div class="recipe__info">
+                    <h3 class="recipe__title">${recipe.name}</h3>
+                    <p class="recipe__text"><span class="icon-time"></span> ${recipe.cooking_time} мин.</p>
+                    <div class="recipe__ingredients">
+                        <h4>Ингредиенты:</h4>
+                        <ul>
+                            ${recipe.ingredients.map(ing => 
+                                `<li>${ing.name} - ${ing.amount} ${ing.unit}</li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <a href="#" class="shopping-list__button link">Удалить</a>
+        `;
+        
+        return listItem;
+    }
+
+    // Показ сообщения о пустом списке
+    function showEmptyMessage() {
+        shoppingList.innerHTML = '';
+        emptyMessage.style.display = 'block';
+        downloadButton.style.display = 'none';
+        counter.textContent = '0';
+    }
+
+    // Обновление счетчика
+    function updateCounter(count) {
+        counter.textContent = count;
+    }
+
+    // Обработчик удаления рецепта из списка
+    shoppingList.addEventListener('click', function(e) {
+        if (e.target.classList.contains('shopping-list__button')) {
+            e.preventDefault();
+            const item = e.target.closest('.shopping-list__item');
+            const recipeId = item.getAttribute('data-id');
+            
+            // Удаляем из списка покупок в localStorage
+            const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+            const updatedPurchases = purchases.filter(id => id !== recipeId);
+            localStorage.setItem('purchases', JSON.stringify(updatedPurchases));
+            
+            // Удаляем элемент из DOM
+            item.remove();
+            
+            // Обновляем интерфейс
+            if (updatedPurchases.length === 0) {
+                showEmptyMessage();
+            }
+            
+            updateCounter(updatedPurchases.length);
+        }
+    });
+
+    // Обработчик скачивания списка
+    downloadButton.addEventListener('click', function() {
+        const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+        const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        const purchasedRecipes = recipes.filter(recipe => purchases.includes(recipe.id));
+        
+        // Формируем текст для скачивания
+        let downloadText = 'СПИСОК ПОКУПОК\n\n';
+        
+        purchasedRecipes.forEach(recipe => {
+            downloadText += `=== ${recipe.name} ===\n`;
+            downloadText += `Время приготовления: ${recipe.cooking_time} мин.\n\n`;
+            downloadText += 'Ингредиенты:\n';
+            
+            recipe.ingredients.forEach(ing => {
+                downloadText += `- ${ing.name} - ${ing.amount} ${ing.unit}\n`;
+            });
+            
+            downloadText += '\nОписание:\n';
+            downloadText += recipe.description + '\n\n';
+        });
+        
+        // Создаем и скачиваем файл
+        const blob = new Blob([downloadText], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'Список_покупок.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    // Обработчик выхода
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('currentUser');
+            window.location.href = 'indexNotAuth.html';
+        });
+    }
+
+    // Обновляем список при изменениях в других вкладках
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'purchases') {
+            loadShoppingList();
+        }
+    });
+});
+</script>
+</body>
+</html>

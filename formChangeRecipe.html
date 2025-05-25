@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Редактирование рецепта</title>
+    <link rel="stylesheet" href="./pages/form.css">
+</head>
+<body class="body">
+<header class="header">
+    <nav class="nav">
+        <div class="nav__container container">
+            <ul class="nav__items list">
+                <li class="nav__item"><a href="indexAuth.html" class="nav__link link">Рецепты</a></li>
+                <li class="nav__item"><a href="myFollow.html" class="nav__link link">Мои подписки</a></li>
+                <li class="nav__item"><a href="formRecipe.html" class="nav__link link">Создать рецепт</a></li>
+                <li class="nav__item"><a href="favorite.html" class="nav__link link">Избранное</a></li>
+                <li class="nav__item"><a href="shopList.html" class="nav__link link">Список покупок</a> <span class="badge badge_style_blue nav__badge" id="counter"></span></li>
+
+            </ul>
+            <ul class="nav__items list">
+                <li class="nav__item"><a href="resetPassword.html" class="nav__link link">Изменить пароль</a></li>
+                <li class="nav__item"><a href="indexNotAuth.html" class="nav__link link">Выход</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<main class="main container">
+    <div class="main__header">
+        <h1 class="main__title">Редактирование рецепта</h1>
+    </div>
+    <div class="form-container">
+        <form class="form">
+            <div class="form__group">
+                <label for="id_name" class="form__label">Название рецепта</label>
+                <div class="form__field-group">
+                    <input type="text" id="id_name" name="name" class="form__input">
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <p class="form__label">Теги</p>
+                <div class="form__field-group">
+                    <div class="tags">
+                        <div class="tags__item">
+                            <input type="checkbox" name="breakfast" id="id_breakfast" class="tags__checkbox tags__checkbox_style_orange">
+                            <label for="id_breakfast" class="tags__label">Завтрак</label>
+                        </div>
+                        <div class="tags__item">
+                            <input type="checkbox" name="lunch" id="id_lunch" class="tags__checkbox tags__checkbox_style_green" checked>
+                            <label for="id_lunch" class="tags__label">Обед</label>
+                        </div>
+                        <div class="tags__item">
+                            <input type="checkbox" name="dinner" id="id_dinner" class="tags__checkbox tags__checkbox_style_purple" checked>
+                            <label for="id_dinner" class="tags__label">Ужин</label>
+                        </div>
+                    </div>
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="nameIngredient" class="form__label">Ингредиенты</label>
+                <div class="form__field-group">
+                    <div class="form__field-group-ingredientes">
+                        <div class="form__dropdown">
+                            <input type="text" id="nameIngredient" class="form__input">
+                            <div class="form__dropdown-items"></div>
+                        </div>
+                        <input type="number" id="cantidad" class="form__input" min="0">
+                        <label for="cantidad" class="form__label" id="cantidadVal">шт.</label>
+                    </div>
+
+                    <div class="form__field-group-ingredientes-container">
+                        <div class="form__field-item-ingredient" id="ing_3">
+                            <span> Оливки 10шт.</span>
+                            <span class="form__field-item-delete"></span>
+                            <input id="nameIngredient_3" name="nameIngredient_3" type="hidden" value="Оливки">
+                            <input id="valueIngredient_3" name="valueIngredient_3" type="hidden" value="10">
+                            <input id="unitsIngredient_3" name="unitsIngredient_3" type="hidden" value="шт.">
+                        </div>
+                        <div class="form__field-item-ingredient" id="ing_2">
+                            <span> Картошка 5шт.</span>
+                            <span class="form__field-item-delete"></span>
+                            <input id="nameIngredient_2" name="nameIngredient_2" type="hidden" value="Картошка">
+                            <input id="valueIngredient_2" name="valueIngredient_2" type="hidden" value="5">
+                            <input id="unitsIngredient_2" name="unitsIngredient_2" type="hidden" value="шт.">
+                        </div>
+                    </div>
+                    <span class="form__ingredient-link" id="addIng">Добавить ингредиент</span>
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="id_time" class="form__label">Время приготовления</label>
+                <div class="form__field-group form__field-group_time">
+                    <input type="text" id="id_time" name="name" class="form__input">
+                    <label for="id_time" class="form__label">минут</label>
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="id_description" class="form__label">Описание</label>
+                <div class="form__field-group">
+                    <textarea name="description" id="id_description" rows="8" class="form__textarea"></textarea>
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <span class="form__label">Загрузить фото</span>
+                <div class="form__field-group">
+                    <label for="id_file" class="form__file-button">Выбрать файл</label>
+                    <input type="file" class="form__file" name="file" id="id_file">
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__footer">
+                <button class="button button_style_blue">Сохранить</button> <a style="margin-left: 2.5em" href="#" class="form__ingredient-link">Удалить</a>
+            </div>
+        </form>
+    </div>
+
+
+</main>
+<footer class="footer">
+    <div class="footer__container container">
+        <a href="#" class="footer__brand link">Кулинариум</a>
+        <ul class="footer__items">
+            <li class="footer__item"><a href="#" class="footer__link link">Об авторе </a></li>
+            <li class="footer__item"><a href="#" class="footer__link link">Технологии</a></li>
+        </ul>
+    </div>
+</footer>
+<script src="./js/config/config.js"></script>
+<script src="./js/components/Header.js"></script>
+<script src="./js/utils/debouncing.js"></script>
+<script src="./js/api/Api.js"></script>
+<script src="formRecipe.js"></script>
+<script> 
+    document.addEventListener('DOMContentLoaded', function() {
+    // Получаем ID рецепта из URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const recipeId = urlParams.get('id');
+    
+    if (!recipeId) {
+        alert('ID рецепта не указан. Перенаправление на страницу рецептов.');
+        window.location.href = 'indexAuth.html';
+        return;
+    }
+
+    // Получаем данные рецепта из localStorage
+    const recipeData = getRecipeData(recipeId);
+    
+    if (!recipeData) {
+        alert('Данные рецепта не найдены. Перенаправление на страницу рецептов.');
+        window.location.href = 'indexAuth.html';
+        return;
+    }
+
+    // Заполняем форму данными рецепта
+    fillFormWithRecipeData(recipeData);
+
+    // Инициализация компонентов
+    initTags();
+    initIngredients();
+    initFileUpload();
+    initFormSubmit(recipeId);
+    initDeleteButton(recipeId);
+});
+
+function getRecipeData(recipeId) {
+    // Получаем все рецепты из localStorage
+    const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+    
+    // Находим нужный рецепт по ID
+    return recipes.find(recipe => recipe.id === recipeId);
+}
+
+function fillFormWithRecipeData(recipeData) {
+    // Заполнение основных полей
+    document.getElementById('id_name').value = recipeData.name || '';
+    document.getElementById('id_time').value = recipeData.cooking_time || '';
+    document.getElementById('id_description').value = recipeData.description || '';
+
+    // Установка тегов
+    const tags = recipeData.tags || [];
+    document.getElementById('id_breakfast').checked = tags.includes('breakfast');
+    document.getElementById('id_lunch').checked = tags.includes('lunch');
+    document.getElementById('id_dinner').checked = tags.includes('dinner');
+
+    // Очистка контейнера ингредиентов и добавление текущих
+    const ingredientsContainer = document.querySelector('.form__field-group-ingredientes-container');
+    ingredientsContainer.innerHTML = '';
+    
+    recipeData.ingredients.forEach((ingredient, index) => {
+        addIngredientToForm(ingredient, index);
+    });
+
+    // Если есть изображение, показываем его
+    if (recipeData.image) {
+        const fileButton = document.querySelector('.form__file-button');
+        fileButton.textContent = 'Изображение загружено';
+        localStorage.setItem('recipeImage', recipeData.image);
+    }
+}
+
+function initTags() {
+    const tagCheckboxes = document.querySelectorAll('.tags__checkbox');
+    tagCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            // Можно добавить дополнительную логику обработки тегов
+        });
+    });
+}
+
+function initIngredients() {
+    const addIngredientBtn = document.getElementById('addIng');
+    const nameInput = document.getElementById('nameIngredient');
+    const amountInput = document.getElementById('cantidad');
+    const unitLabel = document.getElementById('cantidadVal');
+    let ingredientsData = [];
+
+    // Загрузка данных об ингредиентах из файлов
+    loadIngredientsData();
+
+    // Обработчик добавления ингредиента
+    addIngredientBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const name = nameInput.value.trim();
+        const amount = amountInput.value.trim();
+        const unit = unitLabel.textContent;
+        
+        if (!name || !amount) {
+            alert('Пожалуйста, заполните название и количество ингредиента');
+            return;
+        }
+        
+        const ingredient = {
+            name: name,
+            amount: amount,
+            unit: unit
+        };
+        
+        // Добавляем ингредиент в форму
+        const ingredientsContainer = document.querySelector('.form__field-group-ingredientes-container');
+        const nextId = ingredientsContainer.children.length + 1;
+        addIngredientToForm(ingredient, nextId);
+        
+        // Очищаем поля ввода
+        nameInput.value = '';
+        amountInput.value = '';
+    });
+
+    // Автодополнение для поля названия ингредиента
+    nameInput.addEventListener('input', function() {
+        const dropdown = document.querySelector('.form__dropdown-items');
+        const value = this.value.toLowerCase();
+        
+        if (value.length < 2) {
+            dropdown.innerHTML = '';
+            return;
+        }
+        
+        const matches = ingredientsData.filter(item => 
+            item.name.toLowerCase().includes(value)
+        ).slice(0, 5);
+        
+        dropdown.innerHTML = matches.map(item => 
+            `<div class="form__dropdown-item">${item.name} (${item.unit})</div>`
+        ).join('');
+        
+        // Обработчик выбора из dropdown
+        document.querySelectorAll('.form__dropdown-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const selected = ingredientsData.find(ing => 
+                    ing.name === this.textContent.split(' (')[0]
+                );
+                
+                nameInput.value = selected.name;
+                unitLabel.textContent = selected.unit;
+                dropdown.innerHTML = '';
+            });
+        });
+    });
+
+    // Удаление ингредиента
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('form__field-item-delete')) {
+            e.target.parentElement.remove();
+        }
+    });
+
+    function loadIngredientsData() {
+        // Здесь можно загрузить данные из ingredients.json или ingredients.csv
+        // Для примера используем фиктивные данные
+        ingredientsData = [
+            { name: "Яйцо", unit: "шт." },
+            { name: "Молоко", unit: "мл." },
+            { name: "Сахар", unit: "ст.л." },
+            { name: "Мука", unit: "гр." },
+            { name: "Соль", unit: "ч.л." },
+            { name: "Масло сливочное", unit: "гр." },
+            { name: "Оливковое масло", unit: "мл." },
+            { name: "Картофель", unit: "шт." },
+            { name: "Лук", unit: "шт." },
+            { name: "Чеснок", unit: "зубч." }
+        ];
+    }
+}
+
+function addIngredientToForm(ingredient, id) {
+    const ingredientsContainer = document.querySelector('.form__field-group-ingredientes-container');
+    
+    const ingredientElement = document.createElement('div');
+    ingredientElement.className = 'form__field-item-ingredient';
+    ingredientElement.id = `ing_${id}`;
+    
+    ingredientElement.innerHTML = `
+        <span> ${ingredient.name} ${ingredient.amount}${ingredient.unit}</span>
+        <span class="form__field-item-delete"></span>
+        <input id="nameIngredient_${id}" name="nameIngredient_${id}" type="hidden" value="${ingredient.name}">
+        <input id="valueIngredient_${id}" name="valueIngredient_${id}" type="hidden" value="${ingredient.amount}">
+        <input id="unitsIngredient_${id}" name="unitsIngredient_${id}" type="hidden" value="${ingredient.unit}">
+    `;
+    
+    ingredientsContainer.appendChild(ingredientElement);
+}
+
+function initFileUpload() {
+    const fileInput = document.getElementById('id_file');
+    const fileButton = document.querySelector('.form__file-button');
+    
+    fileInput.addEventListener('change', function() {
+        if (this.files && this.files[0]) {
+            fileButton.textContent = this.files[0].name;
+            
+            // Сохраняем данные изображения для отправки на сервер
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                localStorage.setItem('recipeImage', e.target.result);
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+}
+
+function initFormSubmit(recipeId) {
+    const form = document.querySelector('.form');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Собираем данные формы
+        const formData = {
+            id: recipeId,
+            name: document.getElementById('id_name').value,
+            tags: [],
+            ingredients: [],
+            cooking_time: document.getElementById('id_time').value,
+            description: document.getElementById('id_description').value,
+            image: localStorage.getItem('recipeImage') || ''
+        };
+        
+        // Собираем теги
+        if (document.getElementById('id_breakfast').checked) formData.tags.push('breakfast');
+        if (document.getElementById('id_lunch').checked) formData.tags.push('lunch');
+        if (document.getElementById('id_dinner').checked) formData.tags.push('dinner');
+        
+        // Собираем ингредиенты
+        const ingredientElements = document.querySelectorAll('.form__field-item-ingredient');
+        ingredientElements.forEach(el => {
+            formData.ingredients.push({
+                name: el.querySelector('input[id^="nameIngredient"]').value,
+                amount: el.querySelector('input[id^="valueIngredient"]').value,
+                unit: el.querySelector('input[id^="unitsIngredient"]').value
+            });
+        });
+        
+        // Обновляем рецепт в localStorage
+        const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+        const index = recipes.findIndex(r => r.id === recipeId);
+        
+        if (index !== -1) {
+            recipes[index] = formData;
+        } else {
+            recipes.push(formData);
+        }
+        
+        localStorage.setItem('recipes', JSON.stringify(recipes));
+        localStorage.removeItem('recipeImage');
+        
+        alert('Рецепт успешно сохранен!');
+        window.location.href = 'indexAuth.html';
+    });
+}
+
+function initDeleteButton(recipeId) {
+    const deleteButton = document.querySelector('.form__ingredient-link[href="#"]');
+    
+    deleteButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        if (!confirm('Вы уверены, что хотите удалить этот рецепт?')) return;
+        
+        // Удаляем рецепт из localStorage
+        const recipes = JSON.parse(localStorage.getItem('recipes')) || [];
+        const updatedRecipes = recipes.filter(r => r.id !== recipeId);
+        localStorage.setItem('recipes', JSON.stringify(updatedRecipes));
+        
+        // Удаляем из избранного и покупок, если есть
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        const updatedFavorites = favorites.filter(id => id !== recipeId);
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+        
+        const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        const updatedPurchases = purchases.filter(id => id !== recipeId);
+        localStorage.setItem('purchases', JSON.stringify(updatedPurchases));
+        
+        localStorage.removeItem('recipeImage');
+        
+        alert('Рецепт успешно удален!');
+        window.location.href = 'indexAuth.html';
+    });
+}
+</script>
+</body>
+</html>

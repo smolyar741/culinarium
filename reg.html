@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="./pages/form.css">
+</head>
+<body class="body">
+<header class="header">
+    <nav class="nav">
+        <div class="nav__container container">
+            <ul class="nav__items list">
+                <li class="nav__item nav__item_disabled"><a href="indexNotAuth.html" class="nav__link link">Рецепты</a></li>
+                <li class="nav__item nav__item_disabled"><a href="#" class="nav__link link">Список покупок</a></li>
+            </ul>
+            <ul class="nav__items list">
+                <li class="nav__item"><a href="authForm.html" class="nav__link link">Войти</a></li>
+                <li class="nav__item"><a href="reg.html" class="button button_style_blue">Создать аккаунт</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<main class="main container">
+    <div class="main__header">
+        <h1 class="main__title">Регистрация</h1>
+    </div>
+    <div class="form-container">
+        <form class="form" id="registrationForm">
+            <div class="form__group">
+                <label for="id_first_name" class="form__label">Имя</label>
+                <div class="form__field-group">
+                    <input type="text" name="first_name" id="id_first_name" class="form__input" required>
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="id_username" class="form__label">Имя пользователя</label>
+                <div class="form__field-group">
+                    <input type="text" name="username" id="id_username" class="form__input" required>
+                    <span class="form__error" id="usernameError"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="id_last_name" class="form__label">Фамилия</label>
+                <div class="form__field-group">
+                    <input type="text" name="last_name" id="id_last_name" class="form__input">
+                    <span class="form__error"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="id_email" class="form__label">Адрес электронной почты</label>
+                <div class="form__field-group">
+                    <input type="email" name="email" id="id_email" class="form__input" required>
+                    <span class="form__error" id="emailError"></span>
+                </div>
+            </div>
+            <div class="form__group">
+                <label for="id_password" class="form__label">Пароль</label>
+                <div class="form__field-group">
+                    <input type="password" name="password" id="id_password" class="form__input" required minlength="6">
+                    <span class="form__error" id="passwordError"></span>
+                </div>
+            </div>
+            <div class="form__footer">
+                <button type="submit" class="button button_style_blue">Создать аккаунт</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer__container container">
+        <a href="indexNotAuth.html" class="footer__brand link">Кулинариум</a>
+        <ul class="footer__items">
+            <li class="footer__item"><a href="#" class="footer__link link">Об авторе </a></li>
+            <li class="footer__item"><a href="#" class="footer__link link">Технологии</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const registrationForm = document.getElementById('registrationForm');
+        const usernameError = document.getElementById('usernameError');
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+
+        // Инициализация хранилища пользователей, если его нет
+        if (!localStorage.getItem('users')) {
+            localStorage.setItem('users', JSON.stringify([]));
+        }
+
+        registrationForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Сброс сообщений об ошибках
+            usernameError.textContent = '';
+            emailError.textContent = '';
+            passwordError.textContent = '';
+
+            // Получение данных формы
+            const firstName = document.getElementById('id_first_name').value;
+            const lastName = document.getElementById('id_last_name').value;
+            const username = document.getElementById('id_username').value;
+            const email = document.getElementById('id_email').value;
+            const password = document.getElementById('id_password').value;
+
+            // Валидация пароля
+            if (password.length < 6) {
+                passwordError.textContent = 'Пароль должен содержать не менее 6 символов';
+                return;
+            }
+
+            // Получение списка пользователей
+            const users = JSON.parse(localStorage.getItem('users'));
+
+            // Проверка на существующее имя пользователя
+            const usernameExists = users.some(user => user.username === username);
+            if (usernameExists) {
+                usernameError.textContent = 'Это имя пользователя уже занято';
+                return;
+            }
+
+            // Проверка на существующий email
+            const emailExists = users.some(user => user.email === email);
+            if (emailExists) {
+                emailError.textContent = 'Этот email уже зарегистрирован';
+                return;
+            }
+
+            // Создание нового пользователя
+            const newUser = {
+                first_name: firstName,
+                last_name: lastName,
+                username: username,
+                email: email,
+                password: password // В реальном приложении пароль должен быть хеширован
+            };
+
+            // Добавление пользователя в хранилище
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            // Автоматический вход после регистрации
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            
+            // Перенаправление на авторизованную страницу
+            window.location.href = 'indexAuth.html';
+        });
+    });
+</script>
+</body>
+</html>

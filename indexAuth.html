@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кулинариум - Рецепты</title>
+    <link rel="stylesheet" href="./pages/index.css">
+</head>
+<body class="body">
+<header class="header">
+    <nav class="nav">
+        <div class="nav__container container">
+            <ul class="nav__items list">
+                <li class="nav__item nav__item_active"><a href="indexAuth.html" class="nav__link link">Рецепты</a></li>
+                <li class="nav__item"><a href="myFollow.html" class="nav__link link">Мои подписки</a></li>
+                <li class="nav__item"><a href="formRecipe.html" class="nav__link link">Создать рецепт</a></li>
+                <li class="nav__item"><a href="favorite.html" class="nav__link link">Избранное</a></li>
+                <li class="nav__item"><a href="shopList.html" class="nav__link link">Список покупок</a> 
+                    <span class="badge badge_style_blue nav__badge" id="counter">0</span>
+                </li>
+            </ul>
+            <ul class="nav__items list">
+                <li class="nav__item"><a href="resetPassword.html" class="nav__link link">Изменить пароль</a></li>
+                <li class="nav__item"><a href="indexNotAuth.html" class="nav__link link">Выход</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main class="main container">
+    <div class="main__header">
+        <h1 class="main__title">Рецепты</h1>
+        <ul class="tags">
+            <li class="tags__item">
+                <a id="breakfast" class="tags__checkbox tags__checkbox_style_orange tags__checkbox_active" href="#"></a>
+                <span class="tags__label">Завтрак</span>
+            </li>
+            <li class="tags__item">
+                <a id="lunch" class="tags__checkbox tags__checkbox_style_green tags__checkbox_active" href="#"></a>
+                <span class="tags__label">Обед</span>
+            </li>
+            <li class="tags__item">
+                <a id="dinner" class="tags__checkbox tags__checkbox_style_purple tags__checkbox_active" href="#"></a>
+                <span class="tags__label">Ужин</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card-list" id="cardList">
+        <!-- Карточки будут рендериться здесь -->
+    </div>
+
+    <nav class="pagination" aria-label="Навигация по страницам">
+        <ul class="pagination__container" id="paginationContainer">
+            <!-- Пагинация будет рендериться здесь -->
+        </ul>
+    </nav>
+</main>
+
+<footer class="footer">
+    <div class="footer__container container">
+        <a href="#" class="footer__brand link">Кулинариум</a>
+        <ul class="footer__items">
+            <li class="footer__item"><a href="#" class="footer__link link">Об авторе</a></li>
+            <li class="footer__item"><a href="#" class="footer__link link">Технологии</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Конфигурация приложения
+    const config = {
+        recipesPerPage: 6,
+        defaultImage: './images/default-recipe.jpg',
+        defaultTags: ['breakfast', 'lunch', 'dinner']
+    };
+
+    // Состояние приложения
+    const state = {
+        recipes: [],
+        activeTags: [...config.defaultTags],
+        currentPage: 1,
+        isLoading: false
+    };
+
+    // DOM элементы
+    const elements = {
+        cardList: document.getElementById('cardList'),
+        paginationContainer: document.getElementById('paginationContainer'),
+        tagElements: document.querySelectorAll('.tags__checkbox'),
+        counter: document.getElementById('counter')
+    };
+
+    // Инициализация приложения
+    init();
+
+    function init() {
+        loadRecipes();
+        setupEventListeners();
+    }
+
+    function loadRecipes() {
+        try {
+            const savedRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
+            
+            // Сортируем рецепты по дате создания (новые сначала)
+            state.recipes = savedRecipes.sort((a, b) => 
+                new Date(b.created || 0) - new Date(a.created || 0)
+            );
+            
+            render();
+        } catch (error) {
+            console.error('Ошибка загрузки рецептов:', error);
+            showError('Не удалось загрузить рецепты');
+        }
+    }
+
+    function render() {
+        renderCards();
+        renderPagination();
+        updatePurchaseCounter();
+    }
+
+    function renderCards() {
+        elements.cardList.innerHTML = '';
+        
+        const filteredRecipes = filterRecipesByTags();
+        const paginatedRecipes = paginateRecipes(filteredRecipes);
+
+        if (paginatedRecipes.length === 0) {
+            elements.cardList.innerHTML = `
+                <div class="empty-state">
+                    <p>Рецептов не найдено</p>
+                    <a href="formRecipe.html" class="button button_style_blue">Создать первый рецепт</a>
+                </div>
+            `;
+            return;
+        }
+
+        paginatedRecipes.forEach(recipe => {
+            const card = createRecipeCard(recipe);
+            elements.cardList.appendChild(card);
+        });
+
+        setupCardEventHandlers();
+    }
+
+    function filterRecipesByTags() {
+        // Если нет активных тегов - показываем все рецепты
+        if (state.activeTags.length === 0) {
+            return [...state.recipes];
+        }
+
+        return state.recipes.filter(recipe => {
+            // Проверяем что recipe.tags существует и является массивом
+            if (!Array.isArray(recipe.tags)) {
+                return false;
+            }
+            
+            // Проверяем есть ли пересечение тегов рецепта и активных тегов
+            return recipe.tags.some(tag => 
+                state.activeTags.includes(tag)
+            );
+        });
+    }
+
+    function paginateRecipes(recipes) {
+        const start = (state.currentPage - 1) * config.recipesPerPage;
+        const end = start + config.recipesPerPage;
+        return recipes.slice(start, end);
+    }
+
+    function createRecipeCard(recipe) {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        
+        const isFavorite = favorites.includes(recipe.id);
+        const inShoppingList = purchases.includes(recipe.id);
+        
+        // Создаем HTML для тегов рецепта
+        const tagsHTML = (Array.isArray(recipe.tags) ? recipe.tags.map(tag => {
+            const tagInfo = {
+                breakfast: { class: 'badge_style_orange', label: 'Завтрак' },
+                lunch: { class: 'badge_style_green', label: 'Обед' },
+                dinner: { class: 'badge_style_purple', label: 'Ужин' }
+            }[tag] || { class: '', label: tag };
+            
+            return `<li class="card__item"><span class="badge ${tagInfo.class}">${tagInfo.label}</span></li>`;
+        }).join('') : '');
+    
+
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.setAttribute('data-id', recipe.id);
+        card.innerHTML = `
+            <a href="singlePage.html?id=${recipe.id}" class="link">
+                <img src="${recipe.image || config.defaultImage}" 
+                     alt="${recipe.name || 'Без названия'}" 
+                     class="card__image"
+                     onerror="this.src='${config.defaultImage}'">
+            </a>
+            <div class="card__body">
+                <a class="card__title link" href="singlePage.html?id=${recipe.id}">
+                    ${recipe.name || 'Без названия'}
+                </a>
+                <ul class="card__items">
+                    ${tagsHTML}
+                </ul>
+                <div class="card__items card__items_column">
+                    <p class="card__text"><span class="icon-time"></span> ${recipe.cooking_time || 0} мин.</p>
+                    <p class="card__text"><span class="icon-user"></span> ${recipe.author?.username || 'Автор'}</p>
+                </div>
+            </div>
+            <div class="card__footer">
+                <button class="button button_style_light-blue ${inShoppingList ? 'button_style_light-blue-outline' : ''}" 
+                        name="purchases" 
+                        data-out="${!inShoppingList}">
+                    ${inShoppingList ? 'Рецепт добавлен' : '<span class="icon-plus button__icon"></span>Добавить в покупки'}
+                </button>
+                <button class="button button_style_none" 
+                        name="favorites" 
+                        data-out="${!isFavorite}">
+                    <span class="icon-favorite ${isFavorite ? 'icon-favorite_active' : ''}"></span>
+                </button>
+            </div>
+        `;
+        
+        return card;
+    }
+
+    function renderPagination() {
+        elements.paginationContainer.innerHTML = '';
+        const filteredRecipes = filterRecipesByTags();
+        const totalPages = Math.ceil(filteredRecipes.length / config.recipesPerPage);
+        
+        if (totalPages <= 1) return;
+        
+        // Кнопка "Назад"
+        if (state.currentPage > 1) {
+            elements.paginationContainer.appendChild(
+                createPaginationButton('prev', 'Назад', 'icon-left')
+            );
+        }
+        
+        // Номера страниц
+        const startPage = Math.max(1, state.currentPage - 2);
+        const endPage = Math.min(totalPages, startPage + 4);
+        
+        for (let i = startPage; i <= endPage; i++) {
+            const button = createPaginationButton(i, i);
+            if (i === state.currentPage) {
+                button.classList.add('pagination__item_active');
+            }
+            elements.paginationContainer.appendChild(button);
+        }
+        
+        // Кнопка "Вперед"
+        if (state.currentPage < totalPages) {
+            elements.paginationContainer.appendChild(
+                createPaginationButton('next', 'Вперед', 'icon-right')
+            );
+        }
+    }
+
+    function createPaginationButton(action, text, iconClass = '') {
+        const li = document.createElement('li');
+        li.className = 'pagination__item';
+        
+        const link = document.createElement('a');
+        link.className = 'pagination__link link';
+        link.href = '#';
+        
+        if (iconClass) {
+            const icon = document.createElement('span');
+            icon.className = iconClass;
+            link.appendChild(icon);
+            link.insertAdjacentText('beforeend', ' ' + text);
+        } else {
+            link.textContent = text;
+        }
+        
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            handlePagination(action);
+        });
+        
+        li.appendChild(link);
+        return li;
+    }
+
+    function handlePagination(action) {
+        const filteredRecipes = filterRecipesByTags();
+        const totalPages = Math.ceil(filteredRecipes.length / config.recipesPerPage);
+        
+        switch (action) {
+            case 'prev':
+                if (state.currentPage > 1) state.currentPage--;
+                break;
+            case 'next':
+                if (state.currentPage < totalPages) state.currentPage++;
+                break;
+            default:
+                if (Number.isInteger(action)) {
+                    state.currentPage = action;
+                }
+        }
+        
+        render();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function setupEventListeners() {
+        // Обработчики для тегов
+        elements.tagElements.forEach(tag => {
+            tag.addEventListener('click', function(e) {
+                e.preventDefault();
+                this.classList.toggle('tags__checkbox_active');
+                updateActiveTags();
+            });
+        });
+        
+        // Обновление при изменении данных в localStorage
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'recipes' || e.key === 'favorites' || e.key === 'purchases') {
+                loadRecipes();
+            }
+        });
+    }
+
+    function updateActiveTags() {
+        state.activeTags = Array.from(elements.tagElements)
+            .filter(tag => tag.classList.contains('tags__checkbox_active'))
+            .map(tag => tag.id);
+        
+        // Если ни один тег не выбран - показываем все
+        if (state.activeTags.length === 0) {
+            state.activeTags = [...config.defaultTags];
+            elements.tagElements.forEach(tag => tag.classList.add('tags__checkbox_active'));
+        }
+        
+        state.currentPage = 1;
+        render();
+    }
+
+    function setupCardEventHandlers() {
+        document.querySelectorAll('.card').forEach(card => {
+            const cardId = card.getAttribute('data-id');
+            
+            // Избранное
+            const favoriteBtn = card.querySelector('button[name="favorites"]');
+            if (favoriteBtn) {
+                favoriteBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    toggleFavorite(cardId, favoriteBtn);
+                });
+            }
+            
+            // Покупки
+            const purchaseBtn = card.querySelector('button[name="purchases"]');
+            if (purchaseBtn) {
+                purchaseBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    togglePurchase(cardId, purchaseBtn);
+                });
+            }
+        });
+    }
+
+    function toggleFavorite(recipeId, button) {
+        const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        const icon = button.querySelector('.icon-favorite');
+        
+        if (favorites.includes(recipeId)) {
+            favorites.splice(favorites.indexOf(recipeId), 1);
+            icon.classList.remove('icon-favorite_active');
+            button.setAttribute('data-out', 'true');
+        } else {
+            favorites.push(recipeId);
+            icon.classList.add('icon-favorite_active');
+            button.setAttribute('data-out', 'false');
+        }
+        
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+
+    function togglePurchase(recipeId, button) {
+        const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        
+        if (purchases.includes(recipeId)) {
+            purchases.splice(purchases.indexOf(recipeId), 1);
+            button.innerHTML = '<span class="icon-plus button__icon"></span>Добавить в покупки';
+            button.classList.remove('button_style_light-blue-outline');
+            button.setAttribute('data-out', 'true');
+        } else {
+            purchases.push(recipeId);
+            button.textContent = 'Рецепт добавлен';
+            button.classList.add('button_style_light-blue-outline');
+            button.setAttribute('data-out', 'false');
+        }
+        
+        localStorage.setItem('purchases', JSON.stringify(purchases));
+        updatePurchaseCounter();
+    }
+
+    function updatePurchaseCounter() {
+        const purchases = JSON.parse(localStorage.getItem('purchases')) || [];
+        elements.counter.textContent = purchases.length;
+    }
+
+    function showError(message) {
+        const errorElement = document.createElement('div');
+        errorElement.className = 'error-message';
+        errorElement.textContent = message;
+        elements.cardList.appendChild(errorElement);
+    }
+
+    // Проверяем нужно ли обновить список рецептов (после создания нового)
+    if (localStorage.getItem('shouldUpdateRecipes') === 'true') {
+        localStorage.removeItem('shouldUpdateRecipes');
+        loadRecipes();
+    }
+});
+</script>
+</body>
+</html>
